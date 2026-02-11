@@ -22,6 +22,42 @@ app.mount("/static", StaticFiles(directory=os.path.join(Path(__file__).parent,
 # In-memory activity database
 activities = {
     "Chess Club": {
+        "Debate Club": {
+            "description": "Develop argumentative and public speaking skills through competitive debate",
+            "schedule": "Wednesdays, 4:00 PM - 5:30 PM",
+            "max_participants": 16,
+            "participants": ["alex@mergington.edu"]
+            },
+            "Robotics Team": {
+            "description": "Build and program robots for STEM competitions",
+            "schedule": "Mondays and Thursdays, 4:00 PM - 5:30 PM",
+            "max_participants": 15,
+            "participants": ["lucas@mergington.edu", "maya@mergington.edu"]
+            },
+            "Soccer": {
+            "description": "Competitive soccer team and training",
+            "schedule": "Tuesdays and Thursdays, 3:30 PM - 5:00 PM",
+            "max_participants": 22,
+            "participants": ["james@mergington.edu", "isabella@mergington.edu"]
+            },
+            "Tennis": {
+            "description": "Tennis instruction and tournament participation",
+            "schedule": "Mondays and Wednesdays, 4:00 PM - 5:30 PM",
+            "max_participants": 12,
+            "participants": ["ryan@mergington.edu"]
+            },
+            "Drama Club": {
+            "description": "Perform in school plays and develop acting skills",
+            "schedule": "Tuesdays and Fridays, 4:00 PM - 5:30 PM",
+            "max_participants": 25,
+            "participants": ["grace@mergington.edu", "noah@mergington.edu"]
+            },
+            "Digital Art": {
+            "description": "Create digital artwork using design and animation software",
+            "schedule": "Wednesdays, 3:30 PM - 5:00 PM",
+            "max_participants": 18,
+            "participants": ["ava@mergington.edu"]
+            },
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Fridays, 3:30 PM - 5:00 PM",
         "max_participants": 12,
@@ -53,11 +89,17 @@ def get_activities():
 
 
 @app.post("/activities/{activity_name}/signup")
+# Validate student is not already signed up
+
 def signup_for_activity(activity_name: str, email: str):
     """Sign up a student for an activity"""
     # Validate activity exists
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
+
+    # Check if student is already signed up
+    if email in activities[activity_name]["participants"]:
+        raise HTTPException(status_code=400, detail="Student is already signed up for this activity")
 
     # Get the specific activity
     activity = activities[activity_name]
